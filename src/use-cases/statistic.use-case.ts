@@ -1,7 +1,7 @@
-import { STATUS } from "../enum/statusTicker.enum";
-import { TicketModel } from "../models/ticket.model";
-import { historyRepository } from "../repository/histoty.repository";
-import { ticketRepository } from "../repository/ticket.repository";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "../models/ticket.model.js";
+import { historyRepository } from "../repository/histoty.repository.js";
+import { ticketRepository } from "../repository/ticket.repository.js";
 
 type StatusStats = Record<STATUS, number>;
 
@@ -98,8 +98,8 @@ function printWeakTickets(tickets: TicketModel[]): void {
     if (a.countAnswer !== b.countAnswer) {
       return a.countAnswer - b.countAnswer;
     }
-    const aScore = STATUS_SCORES[a.understandingStatus];
-    const bScore = STATUS_SCORES[b.understandingStatus];
+    const aScore = getScore(a.understandingStatus);
+    const bScore = getScore(b.understandingStatus);
     if (aScore !== bScore) {
       return aScore - bScore;
     }
@@ -121,7 +121,7 @@ function printWeakTickets(tickets: TicketModel[]): void {
 function statusStats(statuses: STATUS[]): StatusStats {
   return statuses.reduce<StatusStats>(
     (acc, status) => {
-      acc[status] += 1;
+      acc[status] = getStat(acc, status) + 1;
       return acc;
     },
     {
@@ -138,10 +138,10 @@ function calculateKnowledgeScore(stats: StatusStats, total: number): string {
     return "0%";
   }
   const weighted =
-    stats[STATUS.GOOD] * STATUS_SCORES[STATUS.GOOD] +
-    stats[STATUS.AVERAGE] * STATUS_SCORES[STATUS.AVERAGE] +
-    stats[STATUS.BAD] * STATUS_SCORES[STATUS.BAD] +
-    stats[STATUS.NONE] * STATUS_SCORES[STATUS.NONE];
+    getStat(stats, STATUS.GOOD) * getScore(STATUS.GOOD) +
+    getStat(stats, STATUS.AVERAGE) * getScore(STATUS.AVERAGE) +
+    getStat(stats, STATUS.BAD) * getScore(STATUS.BAD) +
+    getStat(stats, STATUS.NONE) * getScore(STATUS.NONE);
 
   return `${((weighted / total) * 100).toFixed(1)}%`;
 }
@@ -151,7 +151,8 @@ function formatStatusLine(
   stats: StatusStats,
   total: number,
 ): string {
-  return `${status}: ${stats[status]} (${percent(stats[status], total)})`;
+  const count = getStat(stats, status);
+  return `${status}: ${count} (${percent(count, total)})`;
 }
 
 function percent(part: number, total: number): string {
@@ -170,6 +171,14 @@ function average(total: number, count: number): string {
 
 function sum(values: number[]): number {
   return values.reduce((acc, value) => acc + value, 0);
+}
+
+function getStat(stats: StatusStats, status: STATUS): number {
+  return stats[status] ?? 0;
+}
+
+function getScore(status: STATUS): number {
+  return STATUS_SCORES[status] ?? 0;
 }
 
 function printSection(title: string, lines: string[]): void {

@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.historyRepository = void 0;
-const node_fs_1 = require("node:fs");
-const node_path_1 = require("node:path");
-const history_model_1 = require("../models/history.model");
-const statusTicker_enum_1 = require("../enum/statusTicker.enum");
-const ticket_model_1 = require("../models/ticket.model");
-class historyRepository {
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { HistoryModel } from "../models/history.model.js";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "../models/ticket.model.js";
+export class historyRepository {
     history;
     historyPath;
-    constructor(history, historyPath = (0, node_path_1.resolve)(process.cwd(), "src/data/history.json")) {
+    constructor(history, historyPath = resolve(process.cwd(), "src/data/history.json")) {
         this.historyPath = historyPath;
         this.history = history ?? historyRepository.loadHistoryFromFile(historyPath);
     }
@@ -21,7 +18,7 @@ class historyRepository {
             return [];
         }
         let nextId = this.nextId();
-        const entries = tickets.map((ticket) => new history_model_1.HistoryModel(nextId++, ticket, ticket.understandingStatus));
+        const entries = tickets.map((ticket) => new HistoryModel(nextId++, ticket, ticket.understandingStatus));
         this.history = [...this.history, ...entries];
         this.saveAll();
         return entries;
@@ -37,19 +34,19 @@ class historyRepository {
     }
     saveAll() {
         const data = this.history.map(historyRepository.toRecord);
-        (0, node_fs_1.writeFileSync)(this.historyPath, JSON.stringify(data, null, 2), "utf-8");
+        writeFileSync(this.historyPath, JSON.stringify(data, null, 2), "utf-8");
     }
     static loadHistoryFromFile(path) {
-        if (!(0, node_fs_1.existsSync)(path)) {
-            (0, node_fs_1.writeFileSync)(path, "[]", "utf-8");
+        if (!existsSync(path)) {
+            writeFileSync(path, "[]", "utf-8");
             return [];
         }
-        const raw = (0, node_fs_1.readFileSync)(path, "utf-8").trim();
+        const raw = readFileSync(path, "utf-8").trim();
         if (!raw) {
             return [];
         }
         const data = JSON.parse(raw);
-        return data.map((item) => new history_model_1.HistoryModel(item._id, new ticket_model_1.TicketModel(item.ticket._id, item.ticket.numberTicket, item.ticket.theme, item.ticket.text, item.ticket.countAnswer, item.ticket.understandingStatus), item.quantityAnswer ?? item.ticket.understandingStatus ?? statusTicker_enum_1.STATUS.NONE));
+        return data.map((item) => new HistoryModel(item._id, new TicketModel(item.ticket._id, item.ticket.numberTicket, item.ticket.theme, item.ticket.text, item.ticket.countAnswer, item.ticket.understandingStatus), item.quantityAnswer ?? item.ticket.understandingStatus ?? STATUS.NONE));
     }
     static toRecord(item) {
         return {
@@ -66,5 +63,3 @@ class historyRepository {
         };
     }
 }
-exports.historyRepository = historyRepository;
-//# sourceMappingURL=histoty.repository.js.map

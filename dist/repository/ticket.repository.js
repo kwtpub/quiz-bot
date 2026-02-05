@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ticketRepository = void 0;
-const node_fs_1 = require("node:fs");
-const node_path_1 = require("node:path");
-const ticket_model_1 = require("../models/ticket.model");
-class ticketRepository {
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { TicketModel } from "../models/ticket.model.js";
+export class ticketRepository {
     tickets;
     ticketsPath;
-    constructor(tickets, ticketsPath = (0, node_path_1.resolve)(process.cwd(), "src/data/tickets.json")) {
+    constructor(tickets, ticketsPath = resolve(process.cwd(), "src/data/tickets.json")) {
         this.ticketsPath = ticketsPath;
         this.tickets = tickets ?? ticketRepository.loadTicketsFromFile(ticketsPath);
     }
@@ -24,13 +21,13 @@ class ticketRepository {
     }
     saveAll(tickets = this.tickets) {
         const data = tickets.map(ticketRepository.toRecord);
-        (0, node_fs_1.writeFileSync)(this.ticketsPath, JSON.stringify(data, null, 2), "utf-8");
+        writeFileSync(this.ticketsPath, JSON.stringify(data, null, 2), "utf-8");
         this.tickets = tickets;
     }
     static loadTicketsFromFile(path) {
-        const raw = (0, node_fs_1.readFileSync)(path, "utf-8");
+        const raw = readFileSync(path, "utf-8");
         const data = JSON.parse(raw);
-        return data.map((ticket) => new ticket_model_1.TicketModel(ticket._id, ticket.numberTicket, ticket.theme, ticket.text, ticket.countAnswer, ticket.understandingStatus));
+        return data.map((ticket) => new TicketModel(ticket._id, ticket.numberTicket, ticket.theme, ticket.text, ticket.countAnswer, ticket.understandingStatus));
     }
     static toRecord(ticket) {
         return {
@@ -116,5 +113,3 @@ class ticketRepository {
         return shuffled.slice(0, Math.min(count, shuffled.length));
     }
 }
-exports.ticketRepository = ticketRepository;
-//# sourceMappingURL=ticket.repository.js.map

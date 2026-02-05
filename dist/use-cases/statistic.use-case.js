@@ -1,18 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.statisticUseCase = statisticUseCase;
-const statusTicker_enum_1 = require("../enum/statusTicker.enum");
-const histoty_repository_1 = require("../repository/histoty.repository");
-const ticket_repository_1 = require("../repository/ticket.repository");
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { historyRepository } from "../repository/histoty.repository.js";
+import { ticketRepository } from "../repository/ticket.repository.js";
 const STATUS_SCORES = {
-    [statusTicker_enum_1.STATUS.GOOD]: 1,
-    [statusTicker_enum_1.STATUS.AVERAGE]: 0.6,
-    [statusTicker_enum_1.STATUS.BAD]: 0.3,
-    [statusTicker_enum_1.STATUS.NONE]: 0,
+    [STATUS.GOOD]: 1,
+    [STATUS.AVERAGE]: 0.6,
+    [STATUS.BAD]: 0.3,
+    [STATUS.NONE]: 0,
 };
-function statisticUseCase() {
-    const ticketRepo = new ticket_repository_1.ticketRepository();
-    const historyRepo = new histoty_repository_1.historyRepository();
+export function statisticUseCase() {
+    const ticketRepo = new ticketRepository();
+    const historyRepo = new historyRepository();
     const tickets = ticketRepo.getAll();
     if (tickets.length === 0) {
         console.log("Билеты не найдены.");
@@ -31,10 +28,10 @@ function statisticUseCase() {
         `Индекс знаний (эвристика): ${knowledgeScore}`,
     ]);
     printSection("Текущий уровень знаний (по последнему ответу)", [
-        formatStatusLine(statusTicker_enum_1.STATUS.GOOD, knowledgeStats, totalTickets),
-        formatStatusLine(statusTicker_enum_1.STATUS.AVERAGE, knowledgeStats, totalTickets),
-        formatStatusLine(statusTicker_enum_1.STATUS.BAD, knowledgeStats, totalTickets),
-        formatStatusLine(statusTicker_enum_1.STATUS.NONE, knowledgeStats, totalTickets),
+        formatStatusLine(STATUS.GOOD, knowledgeStats, totalTickets),
+        formatStatusLine(STATUS.AVERAGE, knowledgeStats, totalTickets),
+        formatStatusLine(STATUS.BAD, knowledgeStats, totalTickets),
+        formatStatusLine(STATUS.NONE, knowledgeStats, totalTickets),
     ]);
     printRangeStats("Диапазон 1–30", tickets, 1, 30);
     printRangeStats("Диапазон 31–60", tickets, 31, 60);
@@ -42,10 +39,10 @@ function statisticUseCase() {
     const historyStats = statusStats(history.map((item) => item.quantityAnswer));
     printSection("История ответов", [
         `Всего записей: ${history.length}`,
-        formatStatusLine(statusTicker_enum_1.STATUS.GOOD, historyStats, history.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.AVERAGE, historyStats, history.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.BAD, historyStats, history.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.NONE, historyStats, history.length),
+        formatStatusLine(STATUS.GOOD, historyStats, history.length),
+        formatStatusLine(STATUS.AVERAGE, historyStats, history.length),
+        formatStatusLine(STATUS.BAD, historyStats, history.length),
+        formatStatusLine(STATUS.NONE, historyStats, history.length),
     ]);
     printWeakTickets(tickets);
 }
@@ -65,10 +62,10 @@ function printRangeStats(title, tickets, start, end) {
         `Всего ответов: ${totalAnswers}`,
         `Среднее ответов на билет: ${average(totalAnswers, rangeTickets.length)}`,
         `Индекс знаний (эвристика): ${knowledgeScore}`,
-        formatStatusLine(statusTicker_enum_1.STATUS.GOOD, stats, rangeTickets.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.AVERAGE, stats, rangeTickets.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.BAD, stats, rangeTickets.length),
-        formatStatusLine(statusTicker_enum_1.STATUS.NONE, stats, rangeTickets.length),
+        formatStatusLine(STATUS.GOOD, stats, rangeTickets.length),
+        formatStatusLine(STATUS.AVERAGE, stats, rangeTickets.length),
+        formatStatusLine(STATUS.BAD, stats, rangeTickets.length),
+        formatStatusLine(STATUS.NONE, stats, rangeTickets.length),
     ]);
 }
 function printWeakTickets(tickets) {
@@ -76,8 +73,8 @@ function printWeakTickets(tickets) {
         if (a.countAnswer !== b.countAnswer) {
             return a.countAnswer - b.countAnswer;
         }
-        const aScore = STATUS_SCORES[a.understandingStatus];
-        const bScore = STATUS_SCORES[b.understandingStatus];
+        const aScore = getScore(a.understandingStatus);
+        const bScore = getScore(b.understandingStatus);
         if (aScore !== bScore) {
             return aScore - bScore;
         }
@@ -92,27 +89,28 @@ function printWeakTickets(tickets) {
 }
 function statusStats(statuses) {
     return statuses.reduce((acc, status) => {
-        acc[status] += 1;
+        acc[status] = getStat(acc, status) + 1;
         return acc;
     }, {
-        [statusTicker_enum_1.STATUS.GOOD]: 0,
-        [statusTicker_enum_1.STATUS.AVERAGE]: 0,
-        [statusTicker_enum_1.STATUS.BAD]: 0,
-        [statusTicker_enum_1.STATUS.NONE]: 0,
+        [STATUS.GOOD]: 0,
+        [STATUS.AVERAGE]: 0,
+        [STATUS.BAD]: 0,
+        [STATUS.NONE]: 0,
     });
 }
 function calculateKnowledgeScore(stats, total) {
     if (total === 0) {
         return "0%";
     }
-    const weighted = stats[statusTicker_enum_1.STATUS.GOOD] * STATUS_SCORES[statusTicker_enum_1.STATUS.GOOD] +
-        stats[statusTicker_enum_1.STATUS.AVERAGE] * STATUS_SCORES[statusTicker_enum_1.STATUS.AVERAGE] +
-        stats[statusTicker_enum_1.STATUS.BAD] * STATUS_SCORES[statusTicker_enum_1.STATUS.BAD] +
-        stats[statusTicker_enum_1.STATUS.NONE] * STATUS_SCORES[statusTicker_enum_1.STATUS.NONE];
+    const weighted = getStat(stats, STATUS.GOOD) * getScore(STATUS.GOOD) +
+        getStat(stats, STATUS.AVERAGE) * getScore(STATUS.AVERAGE) +
+        getStat(stats, STATUS.BAD) * getScore(STATUS.BAD) +
+        getStat(stats, STATUS.NONE) * getScore(STATUS.NONE);
     return `${((weighted / total) * 100).toFixed(1)}%`;
 }
 function formatStatusLine(status, stats, total) {
-    return `${status}: ${stats[status]} (${percent(stats[status], total)})`;
+    const count = getStat(stats, status);
+    return `${status}: ${count} (${percent(count, total)})`;
 }
 function percent(part, total) {
     if (total === 0) {
@@ -129,6 +127,12 @@ function average(total, count) {
 function sum(values) {
     return values.reduce((acc, value) => acc + value, 0);
 }
+function getStat(stats, status) {
+    return stats[status] ?? 0;
+}
+function getScore(status) {
+    return STATUS_SCORES[status] ?? 0;
+}
 function printSection(title, lines) {
     console.log(`\n${title}`);
     console.log("-".repeat(title.length));
@@ -136,4 +140,3 @@ function printSection(title, lines) {
         console.log(line);
     }
 }
-//# sourceMappingURL=statistic.use-case.js.map

@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
-import { answersTicketUseCase } from "./use-cases/answers-ticket.use-case";
-import { statisticUseCase } from "./use-cases/statistic.use-case";
+import { answersTicketUseCase } from "./use-cases/answers-ticket.use-case.js";
+import { statisticUseCase } from "./use-cases/statistic.use-case.js";
 
 type AppAction = "answer" | "stat";
 

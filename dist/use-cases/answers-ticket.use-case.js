@@ -1,27 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.answersTicketUseCase = answersTicketUseCase;
-const inquirer_1 = __importDefault(require("inquirer"));
-const statusTicker_enum_1 = require("../enum/statusTicker.enum");
-const ticket_model_1 = require("../models/ticket.model");
-const histoty_repository_1 = require("../repository/histoty.repository");
-const ticket_repository_1 = require("../repository/ticket.repository");
+import inquirer from "inquirer";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "../models/ticket.model.js";
+import { historyRepository } from "../repository/histoty.repository.js";
+import { ticketRepository } from "../repository/ticket.repository.js";
 const STATUS_CHOICES = [
-    { name: "ХОРОШО — знаю уверенно", value: statusTicker_enum_1.STATUS.GOOD, short: statusTicker_enum_1.STATUS.GOOD },
+    { name: "ХОРОШО — знаю уверенно", value: STATUS.GOOD, short: STATUS.GOOD },
     {
         name: "СРЕДНЕ — есть пробелы",
-        value: statusTicker_enum_1.STATUS.AVERAGE,
-        short: statusTicker_enum_1.STATUS.AVERAGE,
+        value: STATUS.AVERAGE,
+        short: STATUS.AVERAGE,
     },
-    { name: "ПЛОХО — помню с трудом", value: statusTicker_enum_1.STATUS.BAD, short: statusTicker_enum_1.STATUS.BAD },
-    { name: "НИКАК — не знаю", value: statusTicker_enum_1.STATUS.NONE, short: statusTicker_enum_1.STATUS.NONE },
+    { name: "ПЛОХО — помню с трудом", value: STATUS.BAD, short: STATUS.BAD },
+    { name: "НИКАК — не знаю", value: STATUS.NONE, short: STATUS.NONE },
 ];
-async function answersTicketUseCase() {
-    const ticketRepo = new ticket_repository_1.ticketRepository();
-    const historyRepo = new histoty_repository_1.historyRepository();
+export async function answersTicketUseCase() {
+    const ticketRepo = new ticketRepository();
+    const historyRepo = new historyRepository();
     const tickets = [
         ticketRepo.getLeastAnsweredTicketByNumberRange(1, 30),
         ticketRepo.getLeastAnsweredTicketByNumberRange(31, 60),
@@ -33,7 +27,7 @@ async function answersTicketUseCase() {
     const answers = [];
     for (const ticket of tickets) {
         printTicket(ticket);
-        const { status } = await inquirer_1.default.prompt([
+        const { status } = await inquirer.prompt([
             {
                 type: "select",
                 name: "status",
@@ -57,7 +51,7 @@ function updateTicketsAnswers(allTickets, answers) {
         if (!answer) {
             return ticket;
         }
-        return new ticket_model_1.TicketModel(ticket._id, ticket.numberTicket, ticket.theme, ticket.text, ticket.countAnswer + 1, answer.status);
+        return new TicketModel(ticket._id, ticket.numberTicket, ticket.theme, ticket.text, ticket.countAnswer + 1, answer.status);
     });
 }
 function printTicket(ticket) {
@@ -67,4 +61,3 @@ function printTicket(ticket) {
     console.log(ticket.text);
     console.log("========================\n");
 }
-//# sourceMappingURL=answers-ticket.use-case.js.map

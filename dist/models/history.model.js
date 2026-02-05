@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HistoryModel = void 0;
-class HistoryModel {
+export class HistoryModel {
     _id;
     ticket;
     quantityAnswer;
@@ -11,5 +8,3 @@ class HistoryModel {
         this.quantityAnswer = quantityAnswer;
     }
 }
-exports.HistoryModel = HistoryModel;
-//# sourceMappingURL=history.model.js.map

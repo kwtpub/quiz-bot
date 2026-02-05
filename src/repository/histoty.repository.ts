@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { HistoryModel } from "../models/history.model";
-import { STATUS } from "../enum/statusTicker.enum";
-import { TicketModel } from "../models/ticket.model";
+import { HistoryModel } from "../models/history.model.js";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "../models/ticket.model.js";
 
 type TicketRecord = {
   _id: number;

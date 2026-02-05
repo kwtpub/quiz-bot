@@ -1,4 +1,4 @@
-import { STATUS } from "../enum/statusTicker.enum";
+import { STATUS } from "../enum/statusTicker.enum.js";
 
 export class TicketModel {
  constructor(

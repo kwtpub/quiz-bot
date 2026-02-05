@@ -1,13 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const inquirer_1 = __importDefault(require("inquirer"));
-const answers_ticket_use_case_1 = require("./use-cases/answers-ticket.use-case");
-const statistic_use_case_1 = require("./use-cases/statistic.use-case");
+import inquirer from "inquirer";
+import { answersTicketUseCase } from "./use-cases/answers-ticket.use-case.js";
+import { statisticUseCase } from "./use-cases/statistic.use-case.js";
 async function main() {
-    const { action } = await inquirer_1.default.prompt([
+    const { action } = await inquirer.prompt([
         {
             type: "select",
             name: "action",
@@ -29,13 +24,12 @@ async function main() {
         },
     ]);
     if (action === "stat") {
-        (0, statistic_use_case_1.statisticUseCase)();
+        statisticUseCase();
         return;
     }
-    await (0, answers_ticket_use_case_1.answersTicketUseCase)();
+    await answersTicketUseCase();
 }
 main().catch((error) => {
     console.error("Ошибка выполнения:", error);
     process.exitCode = 1;
 });
-//# sourceMappingURL=main.js.map

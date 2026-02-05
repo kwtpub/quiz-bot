@@ -1,5 +1,5 @@
-import { STATUS } from "../enum/statusTicker.enum";
-import { TicketModel } from "./ticket.model";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "./ticket.model.js";
 
 export class HistoryModel {
   constructor(

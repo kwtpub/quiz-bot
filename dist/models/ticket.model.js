@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TicketModel = void 0;
-class TicketModel {
+export class TicketModel {
     _id;
     numberTicket;
     theme;
@@ -17,5 +14,3 @@ class TicketModel {
         this.understandingStatus = understandingStatus;
     }
 }
-exports.TicketModel = TicketModel;
-//# sourceMappingURL=ticket.model.js.map

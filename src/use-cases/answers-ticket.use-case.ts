@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
-import { STATUS } from "../enum/statusTicker.enum";
-import { TicketModel } from "../models/ticket.model";
-import { historyRepository } from "../repository/histoty.repository";
-import { ticketRepository } from "../repository/ticket.repository";
+import { STATUS } from "../enum/statusTicker.enum.js";
+import { TicketModel } from "../models/ticket.model.js";
+import { historyRepository } from "../repository/histoty.repository.js";
+import { ticketRepository } from "../repository/ticket.repository.js";
 
 type AnswerResult = {
   ticket: TicketModel;
