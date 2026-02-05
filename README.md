@@ -7,6 +7,12 @@
 
 Простой CLI для тренировки билетов и отслеживания прогресса.
 
+## Видео
+<video controls width="720">
+  <source src="docs/preview.mov" type="video/quicktime">
+  Ваш браузер не поддерживает видео. Ссылка: docs/preview.mov
+</video>
+
 ## Требования
 - Node.js 18+
 
