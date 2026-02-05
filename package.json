@@ -1,0 +1,17 @@
+{
+  "name": "_progress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^25.2.0",
+    "inquirer": "^13.2.2"
+  }
+}
