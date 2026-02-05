@@ -1,25 +1,30 @@
-# Math Analysis Tickets CLI
+# Билеты по матанализу — CLI
 
-Simple CLI to practice tickets and track progress.
+![Node](https://img.shields.io/badge/node-%3E=18-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-готово-3178C6?logo=typescript&logoColor=white)
+![License](https://img.shields.io/badge/license-ISC-blue)
+![CLI](https://img.shields.io/badge/CLI-учёба-6B7280)
 
-## Requirements
+Простой CLI для тренировки билетов и отслеживания прогресса.
+
+## Требования
 - Node.js 18+
 
-## Install
+## Установка
 ```bash
 npm install
 ```
 
-## Build
+## Сборка
 ```bash
 npm run build
 ```
 
-## Run
+## Запуск
 ```bash
 npm start
 ```
 
-## Data
-- Tickets: `src/data/tickets.json`
-- History (auto-created): `src/data/history.json`
+## Данные
+- Билеты: `src/data/tickets.json`
+- История (создаётся автоматически): `src/data/history.json`

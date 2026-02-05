@@ -1,7 +1,7 @@
 {
   "name": "_progress",
   "version": "1.0.0",
-  "description": "",
+  "description": "CLI для тренировки билетов по матанализу и отслеживания прогресса",
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
