@@ -1,6 +1,8 @@
 import inquirer from "inquirer";
 import { answersTicketUseCase } from "./use-cases/answers-ticket.use-case.js";
 import { statisticUseCase } from "./use-cases/statistic.use-case.js";
+import { viewHistoryUseCase } from "./use-cases/view-history.use-case.js";
+import { learningModeUseCase } from "./use-cases/learning-mode.use-case.js";
 async function main() {
     const { action } = await inquirer.prompt([
         {
@@ -14,17 +16,35 @@ async function main() {
                     short: "Ответить",
                 },
                 {
+                    name: "Режим обучения по теме",
+                    value: "learning",
+                    short: "Обучение",
+                },
+                {
                     name: "Посмотреть статистику",
                     value: "stat",
                     short: "Статистика",
                 },
+                {
+                    name: "Посмотреть историю ответов",
+                    value: "history",
+                    short: "История",
+                },
             ],
-            pageSize: 2,
+            pageSize: 4,
             loop: false,
         },
     ]);
     if (action === "stat") {
         statisticUseCase();
+        return;
+    }
+    if (action === "history") {
+        viewHistoryUseCase();
+        return;
+    }
+    if (action === "learning") {
+        await learningModeUseCase();
         return;
     }
     await answersTicketUseCase();
